@@ -1,0 +1,33 @@
+vsphere_user = "administrator@vsphere.local"
+
+vsphere_password = "VCSA_PASSWORD"
+
+vsphere_server = "VCSA_SERVER"
+
+vsphere_datacenter = "DATACENTER"
+
+vsphere_datastore = "ds00"
+
+vsphere_resource_pool = "Resources"
+
+vsphere_network = "vlan0"
+
+vm_template = "templates/ubuntu16"
+
+vm_name = "artifactory"
+
+vm_vcpu = "1"
+
+vm_memory = "2048"
+
+vm_mac_address = "00:00:00:00:00:00"
+
+vm_disk1_size = "10"
+
+vm_domain = "example.internal"
+
+vm_time_zone = "America/New_York"
+
+artifactory_version = "5.9.0"
+
+jc_x_connect_key = "abcd000000000000000000000000000000000000"

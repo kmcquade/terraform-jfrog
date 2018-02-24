@@ -1,0 +1,15 @@
+postgresql_hostname = "postgres.example.internal"
+
+postgresql_version = "9.6.6"
+
+postgresql_db = "postgres"
+
+postgresql_user = "postgres"
+
+postgresql_password = "PASSWORD"
+
+artifactory_user = "artifactory"
+
+artifactory_password = "PASSWORD"
+
+artifactory_db = "artifactory"
