@@ -16,13 +16,13 @@ server {
 server {
     listen 443 ssl;
 
-    server_name artifactory.jfrog.com;
+    server_name ${artifactory_url};
     if ($http_x_forwarded_proto = '') {
         set $http_x_forwarded_proto  $scheme;
     }
     ## Application specific logs
-    ## access_log /var/log/nginx/artifactory.jfrog.com-access.log timing;
-    ## error_log /var/log/nginx/artifactory.jfrog.com-error.log;
+    ## access_log /var/log/nginx/${artifactory_url}-access.log timing;
+    ## error_log /var/log/nginx/${artifactory_url}-error.log;
     rewrite ^/$ /artifactory/webapp/ redirect;
     rewrite ^/artifactory/?(/webapp)?$ /artifactory/webapp/ redirect;
     chunked_transfer_encoding on;
