@@ -9,6 +9,10 @@ coming soon
 ```
 cd product/vsphere
 ```
+- MySQL provder (external DB)
+```
+cd mysql/product
+```
 - PostgreSQL provider (external DB)
 ```
 cd postgresql/product

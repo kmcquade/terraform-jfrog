@@ -148,8 +148,10 @@ resource "vsphere_virtual_machine" "vm" {
       "sudo systemctl restart postfix",
       "sudo sh -c 'echo deb http://nginx.org/packages/ubuntu/ xenial nginx > /etc/apt/sources.list.d/nginx.list'",
       "sudo sh -c 'echo deb-src http://nginx.org/packages/ubuntu/ xenial nginx >> /etc/apt/sources.list.d/nginx.list'",
+      "curl -O https://nginx.org/keys/nginx_signing.key && sudo apt-key add ./nginx_signing.key",
+      "rm -f nginx_signing.key",
       "sudo apt-get update",
-      "sudo apt-get install -y --allow-unauthenticated nginx",
+      "sudo apt-get install -y nginx",
       "sudo rm -f /etc/nginx/conf.d/default.conf",
       "sudo mv -f /tmp/artifactory.conf /etc/nginx/conf.d/artifactory.conf",
       "sudo chown root:root /etc/nginx/conf.d/artifactory.conf",
@@ -173,8 +175,8 @@ resource "vsphere_virtual_machine" "vm" {
       #"sudo apt-get install -y jfrog-artifactory-pro=${var.artifactory_version}",
       #"sudo /opt/jfrog/artifactory/bin/configure.mysql.sh",
       "sudo systemctl start artifactory.service",
-      #"curl --silent --show-error --header 'x-connect-key: ${var.jc_x_connect_key}' https://kickstart.jumpcloud.com/Kickstart | sudo bash",
-      #"sudo rm -f 2",
+      "curl --silent --show-error --header 'x-connect-key: ${var.jc_x_connect_key}' https://kickstart.jumpcloud.com/Kickstart | sudo bash",
+      "sudo rm -f 2",
       "sudo rm -f /home/ubuntu/shutdown.sh",
     ]
   }
