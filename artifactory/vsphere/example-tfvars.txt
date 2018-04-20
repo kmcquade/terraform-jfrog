@@ -28,6 +28,6 @@ vm_domain = "example.internal"
 
 vm_time_zone = "America/New_York"
 
-artifactory_version = "5.9.0"
+artifactory_version = "5.10.3"
 
 jc_x_connect_key = "abcd000000000000000000000000000000000000"
