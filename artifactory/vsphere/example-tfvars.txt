@@ -28,6 +28,8 @@ vm_domain = "example.internal"
 
 vm_time_zone = "America/New_York"
 
-artifactory_version = "5.10.3"
+artifactory_version = "6.0.2"
 
 jc_x_connect_key = "abcd000000000000000000000000000000000000"
+
+ssh_user = "ubuntu"

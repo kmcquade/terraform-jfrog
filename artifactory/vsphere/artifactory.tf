@@ -15,9 +15,10 @@ variable "vm_domain" {}
 variable "vm_time_zone" {}
 variable "artifactory_version" {}
 variable "jc_x_connect_key" {}
+variable "ssh_user" {}
 
 provider "vsphere" {
-  version        = "~> 1.3"
+  version        = "~> 1.6"
   user           = "${var.vsphere_user}"
   password       = "${var.vsphere_password}"
   vsphere_server = "${var.vsphere_server}"
@@ -175,8 +176,8 @@ resource "vsphere_virtual_machine" "vm" {
       #"sudo apt-get install -y jfrog-artifactory-pro=${var.artifactory_version}",
       #"sudo /opt/jfrog/artifactory/bin/configure.mysql.sh",
       "sudo systemctl start artifactory.service",
-      "curl --silent --show-error --header 'x-connect-key: ${var.jc_x_connect_key}' https://kickstart.jumpcloud.com/Kickstart | sudo bash",
-      "sudo rm -f 2",
+      #"curl --silent --show-error --header 'x-connect-key: ${var.jc_x_connect_key}' https://kickstart.jumpcloud.com/Kickstart | sudo bash",
+      #"sudo rm -f 2",
       "sudo rm -f /home/ubuntu/shutdown.sh",
     ]
   }
@@ -184,7 +185,7 @@ resource "vsphere_virtual_machine" "vm" {
   connection {
     type        = "ssh"
     private_key = "${file("~/.ssh/id_rsa")}"
-    user        = "ubuntu"
+    user        = "${var.ssh_user}"
     agent       = false
   }
 }
