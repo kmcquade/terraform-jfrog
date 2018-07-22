@@ -1,6 +1,6 @@
 postgresql_hostname = "postgres.example.internal"
 
-postgresql_version = "9.6.6"
+postgresql_version = "9.6.9"
 
 postgresql_db = "postgres"
 

@@ -8,7 +8,7 @@ variable "artifactory_password" {}
 variable "artifactory_db" {}
 
 provider "postgresql" {
-  version          = "~> 0.1"
+  version          = "~> 0.1.2"
   host             = "${var.postgresql_hostname}"
   port             = 5432
   expected_version = "${var.postgresql_version}"
