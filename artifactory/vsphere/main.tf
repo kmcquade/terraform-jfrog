@@ -14,7 +14,8 @@ variable "vm_disk1_size" {}
 variable "vm_domain" {}
 variable "vm_time_zone" {}
 variable "artifactory_version" {}
-variable "jc_x_connect_key" {}
+variable "jdbc_version" {}
+variable "db_password" {}
 variable "ssh_user" {}
 
 provider "vsphere" {
@@ -127,8 +128,6 @@ resource "vsphere_virtual_machine" "vm" {
   provisioner "remote-exec" {
     inline = [
       "sudo hostnamectl set-hostname ${var.vm_name}.${var.vm_domain}",
-      #"sudo sed -i '2i 127.0.0.1       ${var.vm_name}.${var.vm_domain}' /etc/hosts",
-      #"sudo sed -i '3d' /etc/hosts",
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
       "sudo apt-get autoremove -y",
@@ -174,11 +173,13 @@ resource "vsphere_virtual_machine" "vm" {
       #"curl https://bintray.com/user/downloadSubjectPublicKey?username=jfrog | sudo apt-key add -",
       #"sudo apt-get update -qy",
       #"sudo apt-get install -y jfrog-artifactory-pro=${var.artifactory_version}",
-      #"sudo /opt/jfrog/artifactory/bin/configure.mysql.sh",
+      # DB Setup
+      "wget https://jdbc.postgresql.org/download/postgresql-${var.jdbc_version}.jar",
+      "sudo mv postgresql-${var.jdbc_version}.jar /var/opt/jfrog/artifactory/tomcat/lib/",
+      "sudo cp /opt/jfrog/artifactory/misc/db/postgresql.properties /etc/opt/jfrog/artifactory/db.properties",
+      "sudo sed -i 's/localhost/postgres.${var.vm_domain}/' /etc/opt/jfrog/artifactory/db.properties",
+      "sudo sed -i 's/=password/=${var.db_password}/' /etc/opt/jfrog/artifactory/db.properties",
       "sudo systemctl start artifactory.service",
-      #"curl --silent --show-error --header 'x-connect-key: ${var.jc_x_connect_key}' https://kickstart.jumpcloud.com/Kickstart | sudo bash",
-      #"sudo rm -f 2",
-      "sudo rm -f /home/ubuntu/shutdown.sh",
     ]
   }
 

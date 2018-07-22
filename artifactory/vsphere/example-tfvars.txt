@@ -16,20 +16,22 @@ vm_template = "templates/ubuntu16"
 
 vm_name = "artifactory"
 
-vm_vcpu = "1"
+vm_vcpu = 1
 
-vm_memory = "2048"
+vm_memory = 2048
 
 vm_mac_address = "00:00:00:00:00:00"
 
-vm_disk1_size = "10"
+vm_disk1_size = 10
 
 vm_domain = "example.internal"
 
 vm_time_zone = "America/New_York"
 
-artifactory_version = "6.0.2"
+artifactory_version = "6.1.0"
 
-jc_x_connect_key = "abcd000000000000000000000000000000000000"
+jdbc_version = "42.2.4"
+
+db_password = "DB_PASSWORD"
 
 ssh_user = "ubuntu"
