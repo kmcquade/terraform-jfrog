@@ -1,14 +1,14 @@
-postgresql_hostname = "postgres.example.internal"
+mysql_hostname = "mysql.example.internal"
 
-postgresql_version = "9.6.6"
+mysql_port = 3306
 
-postgresql_db = "postgres"
+mysql_user = "root"
 
-postgresql_user = "postgres"
-
-postgresql_password = "PASSWORD"
+mysql_password = "PASSWORD"
 
 artifactory_user = "artifactory"
+
+artifactory_allow = "%"
 
 artifactory_password = "PASSWORD"
 
