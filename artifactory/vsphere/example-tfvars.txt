@@ -24,9 +24,13 @@ vm_mac_address = "00:00:00:00:00:00"
 
 vm_disk1_size = 10
 
+vm_disk2_size = 20
+
 vm_domain = "example.internal"
 
 vm_time_zone = "America/New_York"
+
+account_id = 121
 
 artifactory_version = "6.1.0"
 
@@ -39,5 +43,7 @@ mariadb_jdbc_version = "2.2.6"
 db_host = "db.example.internal"
 
 db_password = "DB_PASSWORD"
+
+db_allow = "%"
 
 ssh_user = "ubuntu"

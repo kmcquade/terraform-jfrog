@@ -11,15 +11,18 @@ variable "vm_vcpu" {}
 variable "vm_memory" {}
 variable "vm_mac_address" {}
 variable "vm_disk1_size" {}
+variable "vm_disk2_size" {}
 variable "vm_domain" {}
 variable "vm_time_zone" {}
+variable "account_id" {}
 variable "artifactory_version" {}
 variable "postgres_jdbc_version" {}
 variable "mysql_jdbc_version" {}
 variable "mariadb_jdbc_version" {}
-variable "mariadb_password" {}
+#variable "mariadb_password" {}
 variable "db_host" {}
 variable "db_password" {}
+variable "db_allow" {}
 variable "ssh_user" {}
 
 provider "vsphere" {
@@ -102,6 +105,14 @@ resource "vsphere_virtual_machine" "vm" {
     unit_number      = 1
   }
 
+  disk {
+    label            = "disk2"
+    size             = "${var.vm_disk2_size}"
+    eagerly_scrub    = false
+    thin_provisioned = true
+    unit_number      = 2
+  }
+
   clone {
     template_uuid = "${data.vsphere_virtual_machine.template.id}"
 
@@ -135,13 +146,17 @@ resource "vsphere_virtual_machine" "vm" {
       "sudo apt-get update",
       "sudo apt-get upgrade -y",
       "sudo apt-get autoremove -y",
-      "sudo mkdir -p /var/opt/jfrog/artifactory/data/",
+      "sudo mkdir -p /var/opt/jfrog/artifactory/data",
+      "sudo mkdir -p /var/opt/jfrog/artifactory/backup",
       "sudo mkfs.ext4 /dev/sdb",
       "UUID=$(sudo blkid -o value -s UUID /dev/sdb)",
       "echo \"UUID=$UUID /var/opt/jfrog/artifactory/data ext4 defaults 0 0\" | sudo tee -a /etc/fstab",
+      "sudo mkfs.ext4 /dev/sdc",
+      "UUID=$(sudo blkid -o value -s UUID /dev/sdc)",
+      "echo \"UUID=$UUID /var/opt/jfrog/artifactory/backup ext4 defaults 0 0\" | sudo tee -a /etc/fstab",
       "sudo mount -a",
-      "sudo groupadd --gid 1001 artifactory",
-      "sudo adduser --gid 1001 --uid 1001 --disabled-password -gecos \"Artifactory\" artifactory",
+      "sudo groupadd --gid ${var.account_id} artifactory",
+      "sudo adduser --gid ${var.account_id} --uid ${var.account_id} --disabled-password -gecos \"Artifactory\" artifactory",
       "sudo chmod 0750 /var/opt/jfrog/artifactory/data/",
       "sudo chown -R artifactory:artifactory /var/opt/jfrog",
       "echo postfix postfix/mailname string '${var.vm_name}.${var.vm_domain}' | sudo debconf-set-selections",
@@ -179,9 +194,9 @@ resource "vsphere_virtual_machine" "vm" {
       #"sudo apt-get install -y jfrog-artifactory-pro=${var.artifactory_version}",
       # DB Setup
       ### PostgreSQL
-      #"wget https://jdbc.postgresql.org/download/postgresql-${var.postgres_jdbc_version}.jar",
-      #"sudo mv postgresql-${var.postgres_jdbc_version}.jar /var/opt/jfrog/artifactory/tomcat/lib/",
-      #"sudo cp /opt/jfrog/artifactory/misc/db/postgresql.properties /etc/opt/jfrog/artifactory/db.properties",
+      "wget https://jdbc.postgresql.org/download/postgresql-${var.postgres_jdbc_version}.jar",
+      "sudo mv postgresql-${var.postgres_jdbc_version}.jar /var/opt/jfrog/artifactory/tomcat/lib/",
+      "sudo cp /opt/jfrog/artifactory/misc/db/postgresql.properties /etc/opt/jfrog/artifactory/db.properties",
       ### MySQL
       #"sudo apt-get install -y mysql-client",
       #"wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-${var.mysql_jdbc_version}.zip",
@@ -190,12 +205,12 @@ resource "vsphere_virtual_machine" "vm" {
       #"rm -rf mysql-connector-java-*",
       #"sudo cp /opt/jfrog/artifactory/misc/db/mysql.properties /etc/opt/jfrog/artifactory/db.properties",
       ### MariaDB
-      "sudo apt-get install -y mariadb-client",
-      "wget https://downloads.mariadb.com/Connectors/java/connector-java-${var.mariadb_jdbc_version}/mariadb-java-client-${var.mariadb_jdbc_version}.jar",
-      "sudo mv mariadb-java-client-${var.mariadb_jdbc_version}.jar /var/opt/jfrog/artifactory/tomcat/lib/",
-      "sudo cp /opt/jfrog/artifactory/misc/db/mariadb.properties /etc/opt/jfrog/artifactory/db.properties",
-      "mysql -u root -p'${var.mariadb_password}' -h ${var.db_host} -e \"CREATE DATABASE artifactory CHARACTER SET utf8 COLLATE utf8_bin;\"",
-      "mysql -u root -p'${var.mariadb_password}' -h ${var.db_host} -e \"GRANT ALTER, CREATE, CREATE VIEW, DELETE, DROP, INDEX, INSERT, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE ON artifactory.* TO 'artifactory'@'%' IDENTIFIED BY '${var.db_password}';\"",
+      #"sudo apt-get install -y mariadb-client",
+      #"wget https://downloads.mariadb.com/Connectors/java/connector-java-${var.mariadb_jdbc_version}/mariadb-java-client-${var.mariadb_jdbc_version}.jar",
+      #"sudo mv mariadb-java-client-${var.mariadb_jdbc_version}.jar /var/opt/jfrog/artifactory/tomcat/lib/",
+      #"sudo cp /opt/jfrog/artifactory/misc/db/mariadb.properties /etc/opt/jfrog/artifactory/db.properties",
+      #"mysql -u root -p'${var.mariadb_password}' -h ${var.db_host} -e \"CREATE DATABASE artifactory CHARACTER SET utf8 COLLATE utf8_bin;\"",
+      #"mysql -u root -p'${var.mariadb_password}' -h ${var.db_host} -e \"GRANT ALTER, CREATE, CREATE VIEW, DELETE, DELETE HISTORY, DROP, INDEX, INSERT, REFERENCES, SELECT, SHOW VIEW, TRIGGER, UPDATE ON artifactory.* TO 'artifactory'@'${var.db_allow}' IDENTIFIED BY '${var.db_password}';\"",
       # Post DB
       "sudo chown root:root /var/opt/jfrog/artifactory/tomcat/lib/*.jar",
       "sudo sed -i 's/localhost/${var.db_host}/' /etc/opt/jfrog/artifactory/db.properties",
