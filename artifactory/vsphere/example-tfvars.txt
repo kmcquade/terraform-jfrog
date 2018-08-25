@@ -32,7 +32,7 @@ vm_time_zone = "America/New_York"
 
 account_id = 121
 
-artifactory_version = "6.1.0"
+artifactory_version = "6.3.0"
 
 postgres_jdbc_version = "42.2.4"
 
