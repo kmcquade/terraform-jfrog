@@ -26,7 +26,7 @@ variable "db_allow" {}
 variable "ssh_user" {}
 
 provider "vsphere" {
-  version        = "~> 1.7"
+  version        = "~> 1.8"
   user           = "${var.vsphere_user}"
   password       = "${var.vsphere_password}"
   vsphere_server = "${var.vsphere_server}"
